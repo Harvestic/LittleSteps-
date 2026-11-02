@@ -3,7 +3,7 @@ services:
     name: littlesteps
     runtime: node
     plan: free
-    buildCommand: ""
+    buildCommand: echo 'Build complete'
     startCommand: node server.js
     envVars:
       - key: NODE_VERSION

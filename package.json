@@ -4,6 +4,7 @@
   "description": "Early childhood education, nutrition and sickness guide for children aged 3-5",
   "main": "server.js",
   "scripts": {
+    "build": "echo 'Build complete'",
     "start": "node server.js",
     "test": "node tests/test_all.js"
   },
