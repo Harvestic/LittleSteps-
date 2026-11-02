@@ -1,0 +1,19 @@
+# Cloudflare and node binaries
+bin/
+*.exe
+node.cmd
+start.cmd
+start_tunnel.cmd
+
+# Database files
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# Scratch files
+fs practice.txt
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db

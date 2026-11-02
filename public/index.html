@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#FFF8E7">
+  <meta name="description" content="LittleSteps - Early Childhood Nutrition, Child Safety and Joyful Learning for ages 3-5 in Indian communities">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>LittleSteps - Early Nutrition & Joyful Learning</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============================================== -->
+  <!-- 2-MINUTE CALM SPLASH / WELCOME SCREEN          -->
+  <!-- ============================================== -->
+  <div id="splashOverlay" class="splash-overlay">
+    <div class="splash-logo-circle">🌱</div>
+    <h1 class="splash-app-title" data-i18n="appName">LittleSteps</h1>
+    <p class="splash-app-subtitle" data-i18n="appTagline">Early Nutrition and Joyful Learning for Ages 3 to 5</p>
+    
+    <div class="splash-timer-box">
+      <div class="splash-timer-label">Peaceful Breath & Mindful Transition</div>
+      <div id="splashCountdownDisplay" class="splash-countdown">02:00</div>
+      <div class="splash-breathe-text">Take a slow, deep breath in with your child... and exhale gently 🍃</div>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-lg" onclick="LittleApp.dismissSplash()" style="min-width: 240px; box-shadow: 0 4px 14px rgba(217, 107, 67, 0.3);">
+      Enter LittleSteps ➔
+    </button>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- REST / SCREEN TIME OVER BEDTIME MODAL          -->
+  <!-- ============================================== -->
+  <div id="restScreenOverlay" class="rest-screen-overlay">
+    <div class="rest-icon">🌟</div>
+    <h2 style="font-size: 1.8rem; color: var(--text-primary); margin-bottom: 8px;">Play Time Complete!</h2>
+    <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 480px; margin-bottom: 24px;" data-i18n="screenTimeOverNotice">
+      You did wonderful exploring today! Now it is time to rest your eyes, take a calm breath, and play in the sunshine or sleep peacefully.
+    </p>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+      <button class="btn btn-secondary btn-lg" onclick="LittleApp.grantExtraScreenTime(10)">
+        Parent: +10 Minutes
+      </button>
+      <button class="btn btn-primary btn-lg" onclick="LittleApp.switchMode('parent')">
+        🏡 Return to Parent Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Top App Navigation Bar -->
+  <header class="app-header">
+    <div class="header-brand" onclick="location.reload()">
+      <div class="brand-icon">🌱</div>
+      <div>
+        <h1 class="brand-title" data-i18n="appName">LittleSteps</h1>
+        <p class="brand-subtitle" data-i18n="appTagline">Early Nutrition and Joyful Learning for Ages 3 to 5</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <!-- Language Switcher: Pure regional language without brackets -->
+      <select id="langSelect" class="lang-select" aria-label="Select Regional Language">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="mr">मराठी</option>
+        <option value="ta">தமிழ்</option>
+        <option value="te">తెలుగు</option>
+        <option value="kn">ಕನ್ನಡ</option>
+        <option value="ml">മലയാളം</option>
+        <option value="bn">বাংলা</option>
+      </select>
+
+      <button id="logoutBtn" class="btn btn-outline btn-sm" onclick="LittleApp.logout()" style="display: inline-flex;" data-i18n="logout">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Mode Switcher Tabs -->
+    <div class="mode-toggle-bar">
+      <button id="tabParent" class="mode-tab active" data-i18n="parentDashboard">
+        🏡 Parent Dashboard
+      </button>
+      <button id="tabKid" class="mode-tab" data-i18n="childMode">
+        🎈 Kid Play Area
+      </button>
+      <button id="tabSound" class="mode-tab" data-i18n="soundSanctuary">
+        🎧 Calm Sounds & Sanctuary
+      </button>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- VIEW 1: PARENT DASHBOARD                       -->
+    <!-- ============================================== -->
+    <section id="parentSection">
+      
+      <!-- Parent Welcome Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+        <h2 style="font-size: 1.3rem; color: var(--text-primary);">
+          Namaste, <span id="welcomeParentName">Parent</span>! 🙏
+        </h2>
+        <span style="font-size: 0.85rem; color: var(--text-secondary); background: #FFFFFF; padding: 4px 12px; border-radius: var(--radius-full); border: 1px solid var(--border-subtle);">
+          Timezone: <strong>Asia/Kolkata (IST)</strong>
+        </span>
+      </div>
+
+      <!-- SECTION 1: DAILY LOGIN REWARDS -->
+      <div class="card rewards-card">
+        <div class="rewards-header">
+          <div>
+            <h3 class="card-title" style="margin-bottom: 2px;">
+              🎁 <span data-i18n="dailyRewardsTitle">Parent Daily Care Streak</span>
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+              Celebrate everyday consistency in logging healthy meals for your family.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <div class="streak-badge">
+              🔥 <span id="rewardStreakDisplay">0 Days</span>
+            </div>
+            <div class="stars-badge">
+              ⭐ <span id="rewardStarsDisplay">0 ⭐</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Missed Streak Explanation Alert -->
+        <div id="missedStreakNotice" class="disclaimer-banner" style="display: none;"></div>
+
+        <!-- 7-Day Visual Calendar -->
+        <div id="rewardCalendarGrid" class="calendar-grid"></div>
+
+        <div class="rewards-action-row">
+          <button id="claimRewardBtn" class="btn btn-gold btn-lg" onclick="LittleApp.claimReward()" data-i18n="claimRewardBtn">
+            Claim Today Reward
+          </button>
+          
+          <div style="flex: 1; min-width: 200px;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">Earned Badges & Certificates:</div>
+            <div id="earnedBadgesContainer"></div>
+          </div>
+        </div>
+
+        <div class="child-screen-notice">
+          ℹ️ <span data-i18n="screenNotice">Daily rewards are for parents. Children are never forced to use screens daily to access educational activities.</span>
+        </div>
+      </div>
+
+      <!-- SECTION 2: CHILD SELECTOR & PROFILES WITH SCREEN TIME -->
+      <div class="card" style="padding-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <h3 class="card-title" style="margin-bottom: 0;">
+            👶 <span data-i18n="selectChild">Select Child:</span>
+          </h3>
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">
+            Active Child: <strong id="activeChildNameDisplay" style="color: var(--pastel-green-text);">Loading...</strong>
+            <span id="activeChildScreenBadge" style="margin-left: 8px; background: var(--bg-warm-yellow); padding: 3px 8px; border-radius: var(--radius-full); font-size: 0.78rem;"></span>
+          </span>
+        </div>
+        <div id="childSwitchBar" class="child-switch-bar"></div>
+      </div>
+
+      <!-- SECTION 3: NUTRITION & MEAL LOGGING -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+          <div>
+            <h3 class="card-title" style="margin-bottom: 2px;">
+              🍲 <span data-i18n="todayMeals">Today Nourishing Meals</span>
+            </h3>
+            <p class="card-subtitle" style="margin-bottom: 0;">
+              Record foods offered and foods eaten (Roti, Dal, Veggies, Fruits, Milk).
+            </p>
+          </div>
+          <button class="btn btn-primary" onclick="LittleApp.openMealModal()" data-i18n="logMealBtn">
+            + Log a Meal
+          </button>
+        </div>
+
+        <!-- Water Intake Tracker -->
+        <div class="water-widget">
+          <div>
+            <div style="font-weight: 700; color: #0369A1; font-size: 1.05rem;" data-i18n="waterIntakeTitle">💧 Water and Hydration</div>
+            <p style="font-size: 0.8rem; color: #0284C7; max-width: 400px;" data-i18n="waterTip">
+              Offer small sips throughout the day in a clean cup. Hydration needs vary by weather. Never force large amounts.
+            </p>
+          </div>
+          <div class="water-counter">
+            <button class="water-btn" onclick="LittleApp.changeWater(-1)" aria-label="Decrease water glass">−</button>
+            <div class="water-count-display">
+              <span id="waterGlassCount">0</span>
+              <div style="font-size: 0.7rem; font-weight: 600; color: #0284C7;">Glasses</div>
+            </div>
+            <button class="water-btn" onclick="LittleApp.changeWater(1)" aria-label="Increase water glass">+</button>
+          </div>
+        </div>
+
+        <!-- Meal History List -->
+        <div id="mealHistoryList" class="meal-list"></div>
+      </div>
+
+      <!-- SECTION 4: WEEKLY VARIETY SUMMARY -->
+      <div class="card">
+        <h3 class="card-title">
+          🌈 <span data-i18n="weeklyVarietyTitle">Weekly Food Variety Summary</span>
+        </h3>
+        <p class="card-subtitle">
+          Monitoring exposure across the 5 essential food groups (Grains, Dals/Protein, Veggies/Fruits, Dairy, and Hydration).
+        </p>
+
+        <div id="weeklyVarietyContainer"></div>
+
+        <!-- Medical Disclaimer -->
+        <div class="disclaimer-banner">
+          🩺 <strong>Health & Medical Notice:</strong> LittleSteps is a supportive family record-keeping and habit tool. <em>It does NOT diagnose malnutrition, calculate clinical growth percentiles, or prescribe medical treatment.</em> If your child is sick, sluggish, or showing signs of severe underweight, please consult your local Anganwadi worker or visit the nearest Primary Health Center (PHC).
+        </div>
+
+        <div style="margin-top: 14px; text-align: right;">
+          <button class="btn btn-secondary btn-sm" onclick="LittleApp.printAnganwadiReport()" data-i18n="printReport">
+            Export Anganwadi or Doctor Summary
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 5: CAREGIVER SICKNESS & CHILD HEALTH GUIDE BOARD -->
+      <div class="card sickness-board-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+          <h3 class="card-title" style="margin-bottom: 0;">
+            🩺 <span data-i18n="sicknessBoard">Child Health and Sickness Guide</span>
+          </h3>
+          <span style="font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-warm-yellow); padding: 4px 10px; border-radius: var(--radius-full);">
+            Evidence-Based Caregiver Guidance
+          </span>
+        </div>
+        <p class="card-subtitle" style="margin-bottom: 12px;">
+          Type a symptom or sickness to learn reviewed home comfort care, foods to give, and emergency warning signs:
+        </p>
+
+        <!-- Search Bar -->
+        <div class="sickness-search-bar">
+          <input type="text" id="sicknessSearchInput" class="form-input" placeholder="Type symptom (e.g. cold, cough, fever, diarrhea, tummy, rash, mosquito)..." oninput="LittleApp.searchSickness(this.value)">
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="sickness-category-pills">
+          <button type="button" class="sickness-category-pill active" onclick="LittleApp.filterSicknessCategory('all')">All Guidance</button>
+          <button type="button" class="sickness-category-pill" onclick="LittleApp.filterSicknessCategory('Respiratory')">Cold & Cough</button>
+          <button type="button" class="sickness-category-pill" onclick="LittleApp.filterSicknessCategory('General')">Fever</button>
+          <button type="button" class="sickness-category-pill" onclick="LittleApp.filterSicknessCategory('Digestive')">Tummy & Diarrhea</button>
+          <button type="button" class="sickness-category-pill" onclick="LittleApp.filterSicknessCategory('Skin')">Heat Rash</button>
+          <button type="button" class="sickness-category-pill" onclick="LittleApp.filterSicknessCategory('Prevention')">Mosquito Safety</button>
+          <button type="button" class="sickness-category-pill" onclick="LittleApp.filterSicknessCategory('Nutrition')">Appetite</button>
+        </div>
+
+        <!-- Sickness Cards Grid -->
+        <div id="sicknessCardsGrid" class="sickness-grid"></div>
+      </div>
+
+      <!-- SECTION 6: AFFORDABLE COMMUNITY NUTRITION GUIDANCE -->
+      <div class="card">
+        <h3 class="card-title">
+          💡 <span data-i18n="nutritionGuidanceTitle">Affordable Community Nutrition Tips</span>
+        </h3>
+        <p class="card-subtitle">
+          Reviewed, low-cost Indian traditional meal wisdom for children aged 3 to 5.
+        </p>
+        <div id="nutritionAdviceGrid" class="advice-grid"></div>
+      </div>
+
+      <!-- SECTION 7: LEARNING PROGRESS REPORT -->
+      <div class="card">
+        <h3 class="card-title">
+          🌟 Child Learning Garden Progress
+        </h3>
+        <p class="card-subtitle">
+          Activities and games completed in the Kid Play Area:
+        </p>
+        <div id="childLearningBadges"></div>
+      </div>
+
+      <!-- SECTION 8: PRIVACY & DATA RIGHTS -->
+      <div class="card" style="border-color: #E2E8F0;">
+        <h3 class="card-title" style="color: var(--text-secondary);">
+          🔒 <span data-i18n="privacySection">Family Privacy and Data Rights</span>
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 14px;">
+          Your family data is strictly isolated and never made public. We collect only what is necessary (child nickname and age; no exact birthdates, addresses, photos, or biometrics).
+        </p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" onclick="LittleApp.exportFamilyData()" data-i18n="exportDataBtn">
+            Export My Private Records
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="LittleApp.requestAccountErasure()" style="color: #DC2626; border-color: #FCA5A5;" data-i18n="deleteAccountBtn">
+            Request Data Erasure
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 2: CALM KID PLAY AREA (Ages 3-5)           -->
+    <!-- ============================================== -->
+    <section id="kidSection" class="kid-mode-view">
+      
+      <!-- Session Screen Time Tracker Banner -->
+      <div class="screen-time-banner">
+        <div>
+          <span>⏱️ Today Play Session: </span>
+          <strong id="kidPlayTimeDisplay">0 / 45 mins</strong>
+        </div>
+        <button class="btn btn-outline btn-sm" style="padding: 2px 10px; min-height: 28px; background: #FFFFFF;" onclick="LittleApp.switchMode('parent')">
+          Parent Dashboard
+        </button>
+      </div>
+
+      <div class="kid-banner">
+        <h2>🌸 Chhote Kadam - Bal Vatika</h2>
+        <p>Gentle games, kind manners, safe boundaries, and joyful learning!</p>
+      </div>
+
+      <!-- Game Stage Container (Active game renders here) -->
+      <div id="gameActiveContainer"></div>
+
+      <!-- Game Selection Grid: 9 Educational Games -->
+      <div id="gamesGridOverview" class="games-grid">
+        <div class="game-card" onclick="LittleGames.launchGame('alphabet')">
+          <div class="game-icon">🔤</div>
+          <div class="game-title" data-i18n="alphabetGame">Letters and Sounds</div>
+          <div class="game-subtitle">A for Apple, B for Butterfly</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('counting')">
+          <div class="game-icon">🥭</div>
+          <div class="game-title" data-i18n="countingGame">Counting Fun</div>
+          <div class="game-subtitle">Count mangoes in the orchard</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('shapes')">
+          <div class="game-icon">🎨</div>
+          <div class="game-title" data-i18n="colorsShapes">Colors and Shapes</div>
+          <div class="game-subtitle">Roti is round, Samosa is triangle</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('animals')">
+          <div class="game-icon">🐾</div>
+          <div class="game-title" data-i18n="animalsGame">Animals of the World</div>
+          <div class="game-subtitle">Farm, wild, birds and water animals</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('maths')">
+          <div class="game-icon">🧮</div>
+          <div class="game-title" data-i18n="basicMathsGame">Basic Maths for Kids</div>
+          <div class="game-subtitle">Age-based adding, counting and more</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('safety')">
+          <div class="game-icon">🛡️</div>
+          <div class="game-title" data-i18n="goodBadTouchGame">Safe Body Touch Education</div>
+          <div class="game-subtitle">Safe touch, body rules and safety circle</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('manners')">
+          <div class="game-icon">🌱</div>
+          <div class="game-title" data-i18n="mannersGame">Kind Manners and Habits</div>
+          <div class="game-subtitle">Please, Thank You, Sorry and sharing</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('stories')">
+          <div class="game-icon">📖</div>
+          <div class="game-title" data-i18n="storiesRhymes">Moral Stories and Rhymes</div>
+          <div class="game-subtitle">Life lessons: sharing, truth and patience</div>
+        </div>
+
+        <div class="game-card" onclick="LittleGames.launchGame('food')">
+          <div class="game-icon">🍲</div>
+          <div class="game-title" data-i18n="foodExplorer">Healthy Thali Builder</div>
+          <div class="game-subtitle">Fill the plate with healthy dal and veggies</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin: 30px 0;">
+        <button class="btn btn-secondary btn-lg" onclick="LittleApp.switchMode('parent')" data-i18n="parentDashboard">
+          🏡 Return to Parent Dashboard
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 3: CALM SOUNDS & BRAIN SANCTUARY          -->
+    <!-- ============================================== -->
+    <section id="soundSection" style="display: none;">
+      
+      <div class="card sound-sanctuary-card">
+        <h3 class="card-title">
+          🎧 <span data-i18n="soundSanctuary">Calm Sounds and Brain Sanctuary</span>
+        </h3>
+        <p class="card-subtitle">
+          Pure oceanic tides, nature streams, and gentle resonant frequencies to soothe child neurons, enhance creative focus, and aid restful sleep.
+        </p>
+
+        <!-- Current Status & Stop Button -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+          <div id="soundPlayingStatus" style="font-size: 0.95rem; color: var(--text-secondary);">
+            ⚪ Audio Idle (Choose a soothing sound below)
+          </div>
+          <button id="soundStopBtn" class="btn btn-outline btn-sm" onclick="LittleAudio.stop()" style="display: none; color: #DC2626; border-color: #FCA5A5;">
+            ⏹️ Stop Sound
+          </button>
+        </div>
+
+        <h4 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 8px;">🌊 Oceanic & Nature Soundscapes</h4>
+        <div class="sound-chips-grid">
+          <div class="sound-chip" data-sound-type="ocean" onclick="LittleAudio.play('ocean', null, 15)">
+            <div class="sound-chip-icon">🌊</div>
+            <div>
+              <div class="sound-chip-title" data-i18n="oceanWaves">Ocean Waves</div>
+              <div class="sound-chip-desc">Rhythmic gentle sea tides for deep calm</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="stream" onclick="LittleAudio.play('stream', null, 15)">
+            <div class="sound-chip-icon">🍃</div>
+            <div>
+              <div class="sound-chip-title" data-i18n="forestStream">Forest Stream and Breeze</div>
+              <div class="sound-chip-desc">Gentle flowing brook and rustling leaves</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="rain" onclick="LittleAudio.play('rain', null, 15)">
+            <div class="sound-chip-icon">🌧️</div>
+            <div>
+              <div class="sound-chip-title" data-i18n="gentleRain">Gentle Rain</div>
+              <div class="sound-chip-desc">Soft, peaceful raindrops for sleep</div>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size: 1rem; color: var(--text-primary); margin: 20px 0 8px;">🧘 Resonant Frequencies for Body & Mind</h4>
+        <div class="sound-chips-grid">
+          <div class="sound-chip" data-sound-type="chakra" data-sound-param="396" onclick="LittleAudio.play('chakra', 396, 15)">
+            <div class="sound-chip-icon">🔴</div>
+            <div>
+              <div class="sound-chip-title">Root Harmony (396 Hz)</div>
+              <div class="sound-chip-desc">Feeling safe, protected and grounded</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="chakra" data-sound-param="417" onclick="LittleAudio.play('chakra', 417, 15)">
+            <div class="sound-chip-icon">🟠</div>
+            <div>
+              <div class="sound-chip-title">Sacral Flow (417 Hz)</div>
+              <div class="sound-chip-desc">Playful joy, curiosity and creativity</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="chakra" data-sound-param="528" onclick="LittleAudio.play('chakra', 528, 15)">
+            <div class="sound-chip-icon">🟡</div>
+            <div>
+              <div class="sound-chip-title">Solar Confidence (528 Hz)</div>
+              <div class="sound-chip-desc">Calm courage and tummy harmony</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="chakra" data-sound-param="639" onclick="LittleAudio.play('chakra', 639, 15)">
+            <div class="sound-chip-icon">🟢</div>
+            <div>
+              <div class="sound-chip-title">Heart Love (639 Hz)</div>
+              <div class="sound-chip-desc">Family bonding, kindness and warm love</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="chakra" data-sound-param="741" onclick="LittleAudio.play('chakra', 741, 15)">
+            <div class="sound-chip-icon">🔵</div>
+            <div>
+              <div class="sound-chip-title">Throat Harmony (741 Hz)</div>
+              <div class="sound-chip-desc">Joyful singing, speech and calm words</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="chakra" data-sound-param="852" onclick="LittleAudio.play('chakra', 852, 15)">
+            <div class="sound-chip-icon">🟣</div>
+            <div>
+              <div class="sound-chip-title">Third Eye Focus (852 Hz)</div>
+              <div class="sound-chip-desc">Mindful clarity, focus and intuition</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="chakra" data-sound-param="963" onclick="LittleAudio.play('chakra', 963, 15)">
+            <div class="sound-chip-icon">⚪</div>
+            <div>
+              <div class="sound-chip-title">Crown Peace (963 Hz)</div>
+              <div class="sound-chip-desc">Deep peaceful sleep and neuron rest</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="brainwave" data-sound-param="10" onclick="LittleAudio.play('brainwave', 10, 15)">
+            <div class="sound-chip-icon">🧠</div>
+            <div>
+              <div class="sound-chip-title">Alpha Brainwave Pulse (10 Hz)</div>
+              <div class="sound-chip-desc">Relaxed alertness for easy learning</div>
+            </div>
+          </div>
+
+          <div class="sound-chip" data-sound-type="brainwave" data-sound-param="6" onclick="LittleAudio.play('brainwave', 6, 20)">
+            <div class="sound-chip-icon">🌙</div>
+            <div>
+              <div class="sound-chip-title">Theta Bedtime Pulse (6 Hz)</div>
+              <div class="sound-chip-desc">Deep calm transition into sweet dreams</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Safe Volume & Timer Controls -->
+        <div class="sound-controls-bar">
+          <div class="volume-slider-group">
+            <span style="font-size: 0.85rem; font-weight: 700;">🔊 <span data-i18n="volumeLabel">Safe Volume</span>:</span>
+            <input type="range" class="volume-slider" min="0.05" max="0.45" step="0.02" value="0.22" oninput="LittleAudio.setVolume(this.value)">
+            <span style="font-size: 0.75rem; color: var(--pastel-green-text); font-weight: 600;">(Ear-Protected)</span>
+          </div>
+
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">
+            Timer Remaining: <strong id="soundTimerRemaining">15:00</strong>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================== -->
+  <!-- MODAL 1: PARENT AUTHENTICATION (Login/Reg)     -->
+  <!-- ============================================== -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <span style="font-size: 2.8rem;">🌱</span>
+        <h3 style="margin-top: 6px;" data-i18n="appName">LittleSteps</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);" data-i18n="appTagline">
+          Early Childhood Nutrition and Education
+        </p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="mode-toggle-bar" style="margin-bottom: 16px;">
+        <button id="authLoginTab" class="mode-tab active" data-i18n="login">Sign In</button>
+        <button id="authRegisterTab" class="mode-tab" data-i18n="register">Sign Up</button>
+        <button id="authForgotTab" class="mode-tab" style="font-size: 0.85rem;" data-i18n="resetPassword">Forgot?</button>
+      </div>
+
+      <!-- Form 1: Login -->
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" data-i18n="email">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" required placeholder="parent@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="password">Password</label>
+          <input type="password" id="loginPassword" class="form-input" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="login">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Form 2: Register with Parental Consent -->
+      <form id="registerForm" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" data-i18n="fullName">Parent or Caregiver Full Name</label>
+          <input type="text" id="regName" class="form-input" required placeholder="Asha Sharma">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="email">Email Address</label>
+          <input type="email" id="regEmail" class="form-input" required placeholder="asha@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="password">Password (min 6 characters)</label>
+          <input type="password" id="regPassword" class="form-input" minlength="6" required placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-checkbox-label">
+            <input type="checkbox" id="regConsent" required checked>
+            <span data-i18n="consentCheckbox">
+              I confirm that I am a parent or authorized guardian consenting to privately log my child nickname and nutrition records.
+            </span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="register">
+          Create Account & Begin
+        </button>
+      </form>
+
+      <!-- Form 3: Forgot Password / Reset Code Flow -->
+      <div id="forgotPassForm" style="display: none;">
+        <form id="forgotPassStep1">
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px;">
+            Enter your email to generate a 6-digit password reset code.
+          </p>
+          <div class="form-group">
+            <label class="form-label" data-i18n="email">Registered Email</label>
+            <input type="email" id="forgotEmailInput" class="form-input" required placeholder="parent@example.com">
+          </div>
+          <button type="submit" class="btn btn-secondary" style="width: 100%;">
+            Get 6-digit Reset Code
+          </button>
+        </form>
+
+        <form id="forgotPassStep2" style="display: none; margin-top: 14px;">
+          <input type="hidden" id="resetEmailInput">
+          <div class="form-group">
+            <label class="form-label" data-i18n="resetCode">6-digit Reset Code</label>
+            <input type="text" id="resetCodeInput" class="form-input" maxlength="6" required placeholder="123456">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="newPassword">New Password</label>
+            <input type="password" id="resetNewPassInput" class="form-input" minlength="6" required placeholder="New password">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="resetBtn">
+            Update Password
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL 2: CHILD PROFILE WITH SCREEN TIME LIMIT  -->
+  <!-- ============================================== -->
+  <div id="childModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="childModalTitle">👶 Child Profile</h3>
+        <button class="modal-close-btn" onclick="LittleApp.closeModal('childModal')">✕</button>
+      </div>
+      <form id="childProfileForm">
+        <input type="hidden" id="editingChildId">
+        
+        <div class="form-group">
+          <label class="form-label" data-i18n="childNickname">Child Nickname (e.g. Raju, Ananya)</label>
+          <input type="text" id="childNicknameInput" class="form-input" required placeholder="Nickname only for privacy">
+          <small style="color: var(--text-muted); font-size: 0.75rem;">For privacy, please use only a nickname or first name.</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="childAge">Age in Years</label>
+          <select id="childAgeInput" class="form-select" onchange="LittleApp.onChildAgeChanged(this.value)">
+            <option value="3">3 Years Old</option>
+            <option value="4" selected>4 Years Old</option>
+            <option value="5">5 Years Old</option>
+          </select>
+        </div>
+
+        <!-- Pediatric Recommendation & Screen Time Setting -->
+        <div class="form-group">
+          <label class="form-label" data-i18n="dailyScreenTimeSetting">Daily Screen Time Limit</label>
+          <select id="childScreenTimeInput" class="form-select">
+            <option value="15">15 Minutes (Short Play)</option>
+            <option value="30">30 Minutes</option>
+            <option value="45" selected>45 Minutes (Recommended)</option>
+            <option value="60">60 Minutes (1 Hour)</option>
+            <option value="90">90 Minutes (1.5 Hours)</option>
+          </select>
+          <div id="pediatricGuidelineText" class="pediatric-guideline-box">
+            🩺 <strong>Pediatric Guideline (Age 4):</strong> Maximum 45 to 60 minutes per day recommended. Ensure plenty of outdoor physical play and gentle co-viewing.
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-outline" onclick="LittleApp.closeModal('childModal')" data-i18n="cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-i18n="save">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL 3: MEAL LOGGING (Add / Edit)              -->
+  <!-- ============================================== -->
+  <div id="mealModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🍲 Log Child Meal</h3>
+        <button class="modal-close-btn" onclick="LittleApp.closeModal('mealModal')">✕</button>
+      </div>
+      <form id="mealLogForm">
+        <input type="hidden" id="editingMealId">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+          <div>
+            <label class="form-label">Date</label>
+            <input type="date" id="mealDateInput" class="form-input" required>
+          </div>
+          <div>
+            <label class="form-label" data-i18n="mealType">Meal Type</label>
+            <select id="mealTypeInput" class="form-select">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch" selected>Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Healthy Snack</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="foodsOffered">
+            Foods Offered (Tap to select)
+          </label>
+          <div id="foodChipsOffered" class="food-chips-grid"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="foodsEaten">
+            Foods Eaten by Child (Tap items eaten)
+          </label>
+          <div id="foodChipsEaten" class="food-chips-grid"></div>
+        </div>
+
+        <!-- Add Custom Food Item -->
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <input type="text" id="customFoodInput" class="form-input" placeholder="Add custom item (e.g. Besan Chilla, Upma)">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="LittleApp.addCustomFood()">+ Add</button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="notes">Meal Notes (Optional)</label>
+          <textarea id="mealNotesInput" class="form-textarea" placeholder="e.g. Liked the carrots, drank buttermilk"></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+          <button type="button" class="btn btn-outline" onclick="LittleApp.closeModal('mealModal')" data-i18n="cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-i18n="save">Save Meal Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="i18n.js"></script>
+  <script src="audio_sanctuary.js"></script>
+  <script src="games.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
