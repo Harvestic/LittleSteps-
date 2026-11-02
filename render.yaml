@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: littlesteps
+    runtime: node
+    plan: free
+    buildCommand: ""
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+    healthCheckPath: /health

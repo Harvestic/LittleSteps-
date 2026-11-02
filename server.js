@@ -125,6 +125,11 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
+    // Health check endpoint (for Render & keep-alive monitors)
+    if ((pathname === '/health' || pathname === '/api/health') && method === 'GET') {
+      return sendJSON(res, 200, { status: 'ok', timestamp: new Date().toISOString() });
+    }
+
     // ==========================================
     // API: AUTHENTICATION & PARENT PROFILE
     // ==========================================
