@@ -1,5 +1,18 @@
-// db.js - Persistent SQLite database management for LittleSteps using node:sqlite
-const { DatabaseSync } = require('node:sqlite');
+// db.js - Persistent SQLite database management for LittleSteps
+let DatabaseSync;
+try {
+  DatabaseSync = require('node:sqlite').DatabaseSync;
+  if (!DatabaseSync) throw new Error('DatabaseSync not found in node:sqlite');
+  console.log('[Database] Loaded native node:sqlite engine');
+} catch (err) {
+  try {
+    DatabaseSync = require('better-sqlite3');
+    console.log('[Database] Loaded better-sqlite3 engine fallback');
+  } catch (err2) {
+    console.error('[Database] Failed to load SQLite engine:', err.message);
+    throw err;
+  }
+}
 const path = require('node:path');
 const fs = require('node:fs');
 

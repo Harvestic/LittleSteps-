@@ -9,7 +9,7 @@
     "test": "node tests/test_all.js"
   },
   "engines": {
-    "node": ">=22.5.0"
+    "node": ">=18.0.0"
   },
   "keywords": [
     "education",
@@ -18,5 +18,8 @@
     "health"
   ],
   "author": "LittleSteps",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3"
+  }
 }

@@ -1,3 +1,6 @@
+# Dependencies
+node_modules/
+
 # Cloudflare and node binaries
 bin/
 *.exe
