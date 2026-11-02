@@ -3,7 +3,11 @@ services:
     name: littlesteps
     runtime: node
     plan: free
-    buildCommand: npm install
-    startCommand: node server.js
+    buildCommand: npm run build
+    startCommand: node --experimental-sqlite server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: NODE_OPTIONS
+        value: "--experimental-sqlite"
     healthCheckPath: /health
-

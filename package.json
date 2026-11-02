@@ -5,11 +5,11 @@
   "main": "server.js",
   "scripts": {
     "build": "echo 'Build complete'",
-    "start": "node server.js",
-    "test": "node tests/test_all.js"
+    "start": "node --experimental-sqlite server.js",
+    "test": "node --experimental-sqlite tests/test_all.js"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.5.0"
   },
   "keywords": [
     "education",
@@ -18,8 +18,5 @@
     "health"
   ],
   "author": "LittleSteps",
-  "license": "MIT",
-  "dependencies": {
-    "better-sqlite3": "^13.0.3"
-  }
+  "license": "MIT"
 }

@@ -1,6 +1,28 @@
 // server.js - High-performance HTTP API and Static Server for LittleSteps
 console.log(`Starting LittleSteps on Node.js ${process.version}...`);
 
+// Ensure node:sqlite is accessible (Node 22 requires --experimental-sqlite flag)
+if (require.main === module && !process.execArgv.includes('--experimental-sqlite')) {
+  try {
+    require('node:sqlite');
+  } catch (err) {
+    console.log('[Startup] node:sqlite requires --experimental-sqlite flag. Relaunching with flag...');
+    const { spawn } = require('node:child_process');
+    const child = spawn(process.execPath, ['--experimental-sqlite', ...process.argv.slice(1)], {
+      stdio: 'inherit',
+      env: process.env
+    });
+    child.on('exit', (code, signal) => {
+      if (signal) {
+        process.kill(process.pid, signal);
+      } else {
+        process.exit(code ?? 0);
+      }
+    });
+    return;
+  }
+}
+
 const http = require('node:http');
 const path = require('node:path');
 const fs = require('node:fs');
