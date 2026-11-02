@@ -1,4 +1,6 @@
 // server.js - High-performance HTTP API and Static Server for LittleSteps
+console.log(`Starting LittleSteps on Node.js ${process.version}...`);
+
 const http = require('node:http');
 const path = require('node:path');
 const fs = require('node:fs');
